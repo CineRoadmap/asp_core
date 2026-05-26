@@ -1,0 +1,37 @@
+@* Archivo: CRM.AplicacionWeb\Views\Shared\_AuthLayout.cshtml
+   Plantilla compartida para las paginas de autenticacion. *@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CineRoadMap</title>
+    <link rel="stylesheet" href="~/css/@(ViewData["AuthCss"] ?? "loginD.css")" asp-append-version="true" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <nav class="navHamburger" role="navigation">
+        <div id="menuToggle">
+            <input type="checkbox" />
+            <span></span>
+            <span></span>
+            <span></span>
+            <ul id="menu">
+                <a asp-controller="Home" asp-action="Index"><li>Inicio</li></a>
+                <a asp-controller="Account" asp-action="Login"><li>Login</li></a>
+                <a asp-controller="Account" asp-action="Register"><li>Registro</li></a>
+            </ul>
+        </div>
+    </nav>
+
+    @if (TempData["Flash"] is string flash)
+    {
+        <div class="flash-banner flash-banner--auth">@flash</div>
+    }
+
+    @RenderBody()
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,71 @@
+@* Archivo: CRM.AplicacionWeb\Views\Community\Index.cshtml
+   Vista Razor de comunidad con ranking, actividad y usuarios destacados. *@
+@model CRM.AplicacionWeb.Models.Community.CommunityIndexViewModel
+@{
+    ViewData["ShellMode"] = "section";
+    ViewData["Slogan"] = "Actuaciones que inspiran, historias que perduran. Descubre el arte de la interpretación.";
+}
+
+<div class="cuerpoPDPA">
+    <section class="comunidad-ranking-resumen">
+        <h1>Ranking de comunidad</h1>
+        <p>Top 10 actualizado: 100 puntos por reto completado + 10 puntos por pelicula valorada.</p>
+    </section>
+
+    <section class="comunidad-ranking-panel" aria-label="Ranking de usuarios">
+        @{
+            @* Posicion incremental que se muestra junto a cada usuario del ranking. *@
+            var rank = 1;
+        }
+        @foreach (var member in Model.Ranking)
+        {
+            @* Indica si la fila del ranking pertenece al usuario autenticado. *@
+            var isCurrentUser = Model.CurrentUserId == member.Id;
+            <article class="comunidad-ranking-item">
+                <div class="comunidad-rank-line">
+                    <h2>
+                        @if (isCurrentUser)
+                        {
+                            <span class="comunidad-rank-current">#@rank - @member.NickName</span>
+                        }
+                        else
+                        {
+                            <a asp-controller="Profile" asp-action="UserProfile" asp-route-id="@member.Id">#@rank - @member.NickName</a>
+                        }
+                    </h2>
+                    <strong>@member.RankingPoints pts</strong>
+                </div>
+                <p>@member.UserName</p>
+                <div class="comunidad-metricas">
+                    <span>@member.CompletedChallenges retos completados - @member.ChallengePoints pts</span>
+                    <span>@member.RatingsCount peliculas valoradas - @member.MoviePoints pts</span>
+                    <span>@member.BadgesUnlocked insignias</span>
+                    <span>@member.MoviesWatched vistas</span>
+                </div>
+            </article>
+            rank++;
+        }
+    </section>
+
+    <section class="comunidad-ranking-resumen comunidad-perfiles-titulo">
+        <h1>Perfiles de la comunidad</h1>
+        <p>Los 10 perfiles con más actividad publica dentro de CineRoadMap.</p>
+    </section>
+
+    <section class="comunidad-board" aria-label="Perfiles de comunidad">
+        @foreach (var profile in Model.Profiles)
+        {
+            <article class="comunidad-card">
+                <h2>
+                    <a asp-controller="Profile" asp-action="UserProfile" asp-route-id="@profile.Id">@profile.NickName</a>
+                </h2>
+                <p>@profile.UserName</p>
+                <div class="comunidad-metricas">
+                    <span>@profile.BadgesUnlocked insignias</span>
+                    <span>@profile.MoviesWatched peliculas vistas</span>
+                    <span>@profile.RatingsCount valoraciones</span>
+                </div>
+            </article>
+        }
+    </section>
+</div>

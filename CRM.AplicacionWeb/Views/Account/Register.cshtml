@@ -1,0 +1,57 @@
+@* Archivo: CRM.AplicacionWeb\Views\Account\Register.cshtml
+   Vista Razor del formulario de registro de usuarios. *@
+@model CRM.AplicacionWeb.Models.Account.RegisterViewModel
+@{
+    Layout = "_AuthLayout";
+    ViewData["AuthCss"] = "Registro.css";
+}
+
+<div class="cuadro">
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <h1>Regístrate</h1>
+        <div asp-validation-summary="ModelOnly" class="legacy-validation"></div>
+
+        <div class="caja">
+            <input asp-for="UserName" placeholder="Usuario" required />
+            <i class='bx bxs-user'></i>
+        </div>
+        <span asp-validation-for="UserName" class="legacy-validation"></span>
+
+        <div class="caja">
+            <input asp-for="NickName" placeholder="Nick" required />
+            <i class='bx bx-user'></i>
+        </div>
+        <span asp-validation-for="NickName" class="legacy-validation"></span>
+
+        <div class="caja">
+            <input asp-for="Email" placeholder="Correo electrónico" required />
+            <i class='bx bxs-envelope'></i>
+        </div>
+        <span asp-validation-for="Email" class="legacy-validation"></span>
+
+        <div class="caja">
+            <input asp-for="Phone" placeholder="Teléfono" required />
+            <i class='bx bxs-phone'></i>
+        </div>
+        <span asp-validation-for="Phone" class="legacy-validation"></span>
+
+        <div class="caja">
+            <input asp-for="Password" placeholder="Contraseña" required />
+            <i class='bx bxs-lock-alt'></i>
+        </div>
+        <span asp-validation-for="Password" class="legacy-validation"></span>
+
+        <div class="caja">
+            <input asp-for="ConfirmPassword" placeholder="Repita la contraseña" required />
+            <i class='bx bxs-lock-alt'></i>
+        </div>
+        <span asp-validation-for="ConfirmPassword" class="legacy-validation"></span>
+
+        <button type="submit" class="boton">Crear cuenta</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,27 @@
+@* Archivo: CRM.AplicacionWeb\Views\Challenges\Index.cshtml
+   Vista Razor que lista retos y progreso del roadmap cinematografico. *@
+@model IReadOnlyCollection<CRM.Proyecto.Dtos.UserChallengeDto>
+@{
+    ViewData["ShellMode"] = "section";
+    ViewData["Slogan"] = "Toda gran historia comienza con un desafío. ¿Tienes el coraje para dirigir la tuya?";
+}
+
+<div class="cuerpoPDPA">
+    <section class="retos-board">
+        @foreach (var challenge in Model)
+        {
+            <article class="reto-card">
+                <h2>@challenge.Name</h2>
+                <p>@challenge.Description</p>
+                <span class="reto-meta">@challenge.TypeLabel · @challenge.StatusLabel</span>
+                <span class="reto-meta">@challenge.RuleLabel</span>
+                <div class="barraProgreso">
+                    <div class="llenado" style="width:@(challenge.TargetProgress == 0 ? 0 : Math.Min(100, challenge.CurrentProgress * 100 / challenge.TargetProgress))%"></div>
+                </div>
+                <strong>@challenge.CurrentProgress / @challenge.TargetProgress</strong>
+                <strong class="reto-puntos">Puntuación: @challenge.PointsEarned / @challenge.PointsAvailable pts</strong>
+                <small>Hasta @challenge.DueDateUtc.ToLocalTime().ToString("dd/MM/yyyy")</small>
+            </article>
+        }
+    </section>
+</div>

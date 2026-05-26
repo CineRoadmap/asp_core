@@ -1,0 +1,43 @@
+@* Archivo: CRM.AplicacionWeb\Views\Account\Login.cshtml
+   Vista Razor del formulario de inicio de sesion. *@
+@model CRM.AplicacionWeb.Models.Account.LoginViewModel
+@{
+    Layout = "_AuthLayout";
+    ViewData["AuthCss"] = "loginD.css";
+}
+
+<div class="cuadro">
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <h1>Login</h1>
+        <div asp-validation-summary="ModelOnly" class="legacy-validation"></div>
+
+        <div class="caja">
+            <input asp-for="UserName" placeholder="Usuario" required />
+            <i class='bx bxs-user'></i>
+        </div>
+        <span asp-validation-for="UserName" class="legacy-validation"></span>
+
+        <div class="caja">
+            <input asp-for="Password" placeholder="Contraseña" required />
+            <i class='bx bxs-lock-alt'></i>
+        </div>
+        <span asp-validation-for="Password" class="legacy-validation"></span>
+
+        <div class="olvidado">
+            <label><input type="checkbox" />Recuérdamela</label>
+            <a asp-action="ForgotPassword">Olvidé mi contraseña</a>
+        </div>
+
+        <button type="submit" class="boton">Login</button>
+
+        <div class="linkRegistro">
+            <p>¿No tienes cuenta? <a asp-action="Register">Regístrate</a></p>
+            <p style="margin-top:10px; color:#fff;">Demo: <strong>demo</strong> / <strong>Demo123!</strong></p>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

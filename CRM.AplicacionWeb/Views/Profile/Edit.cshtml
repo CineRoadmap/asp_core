@@ -1,0 +1,40 @@
+@* Archivo: CRM.AplicacionWeb\Views\Profile\Edit.cshtml
+   Vista Razor para editar los datos publicos del perfil. *@
+@model CRM.AplicacionWeb.Models.Profile.EditProfileViewModel
+@{
+    ViewData["ShellMode"] = "home";
+    ViewData["Slogan"] = "";
+}
+
+<div class="cuerpoPDPA">
+    <div class="perfil-wrapper perfil-edit-wrapper">
+        <section class="card-negra perfil-edit-card">
+            <h1>Editar datos del perfil</h1>
+            <form asp-action="Edit" method="post" class="perfil-form">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="legacy-validation"></div>
+
+                <label asp-for="NickName"></label>
+                <input asp-for="NickName" required />
+                <span asp-validation-for="NickName" class="legacy-validation"></span>
+
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="email" required />
+                <span asp-validation-for="Email" class="legacy-validation"></span>
+
+                <label asp-for="Phone"></label>
+                <input asp-for="Phone" required />
+                <span asp-validation-for="Phone" class="legacy-validation"></span>
+
+                <div class="perfil-edit-actions">
+                    <button type="submit" class="btn-editar-rojo">Guardar datos</button>
+                    <a asp-action="Index" class="btn-editar-rojo btn-secundario">Volver al perfil</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

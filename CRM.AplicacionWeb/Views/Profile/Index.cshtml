@@ -1,0 +1,59 @@
+@* Archivo: CRM.AplicacionWeb\Views\Profile\Index.cshtml
+   Vista Razor del perfil del usuario y su progreso personal. *@
+@model CRM.Proyecto.Dtos.ProfileSummaryDto
+@{
+    ViewData["ShellMode"] = "home";
+    ViewData["Slogan"] = "";
+    @* Datos serializados para renderizar las insignias desbloqueadas en JavaScript. *@
+    var unlockedAchievements = Model.UnlockedAchievements.Select(achievement => new { title = achievement.Title, description = achievement.Description, imagePath = achievement.BadgeImagePath });
+    @* Etiquetas de meses usadas por la grafica de actividad. *@
+    var labels = Model.MonthlyActivity.Select(activityPoint => activityPoint.Label).ToArray();
+    @* Valores numericos usados por la grafica de actividad. *@
+    var values = Model.MonthlyActivity.Select(activityPoint => activityPoint.Count).ToArray();
+}
+<div class="cuerpoPDPA">
+    <div class="perfil-wrapper">
+        <div class="seccion-superior">
+            <aside class="card-negra col-info">
+                <h1>@Model.UserName</h1>
+                <div class="dato-fila"><small>NICKNAME</small><span>@Model.NickName</span></div>
+                <div class="dato-fila"><small>EMAIL</small><span>@Model.Email</span></div>
+                <div class="dato-fila"><small>TELÉFONO</small><span>@Model.Phone</span></div>
+                <a asp-action="Edit" class="btn-editar-rojo perfil-edit-link">Editar datos del perfil</a>
+            </aside>
+
+            <section class="card-negra">
+                <div class="stats-header-grid">
+                    <div class="stat-box-img"><span>PELIS VISTAS</span><strong>@Model.TotalMoviesWatched</strong></div>
+                    <div class="stat-box-img"><span>DURACIÓN MEDIA</span><strong>@Model.AverageDuration'</strong></div>
+                </div>
+                <h3 style="color: #e2b616; font-size: 0.9rem; margin-bottom: 10px;">ACTIVIDAD RECIENTE</h3>
+                <div style="height: 180px;"><canvas id="graficaVistas"></canvas></div>
+            </section>
+        </div>
+
+        <div class="card-negra">
+            <h2 style="color: #e2b616; text-align: center; margin-bottom: 30px;">MIS INSIGNIAS</h2>
+            <div class="controles-logros">
+                <input type="text" id="achievementSearch" placeholder="Filtrar por nombre o descripción..." oninput="startFiltering()" />
+            </div>
+            <div id="achievementContainer" class="logros-grid"></div>
+            <div id="achievementPager" class="paginacion-container"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Shares profile chart values with the legacy JavaScript module.
+        window.chartData = {
+            labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(labels)),
+            counts: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(values))
+        };
+
+        // Shares unlocked achievement cards with the client-side pager and filter.
+        window.allAchievements = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(unlockedAchievements));
+    </script>
+    <script src="~/js/legacy/js.js" asp-append-version="true"></script>
+}

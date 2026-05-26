@@ -1,0 +1,236 @@
+@* Archivo: CRM.AplicacionWeb\Views\Admin\Index.cshtml
+   Vista Razor del panel de administracion e importacion de catalogo. *@
+@model CRM.AplicacionWeb.Models.Admin.AdminPanelViewModel
+@{
+    ViewData["ShellMode"] = "section";
+    ViewData["Slogan"] = "Controla la importacion del catalogo desde TMDB y revisa su estado.";
+    @* Modelos parciales usados por cada bloque del panel de administracion. *@
+    var import = Model.Import;
+    var probe = Model.Probe;
+    var status = import.Status;
+    var health = Model.Health;
+}
+
+<div class="cuerpoPDPA admin-panel">
+    <section class="card-negra admin-summary-card">
+        <div class="admin-heading">
+            <div>
+                <span class="admin-eyebrow">Administracion</span>
+                <h1>Panel de catalogo</h1>
+                <p>Importa peliculas, revisa el estado real de MySQL y prueba la respuesta TMDB / IMDb desde una sola pantalla.</p>
+            </div>
+            <span class="admin-badge @(status.IsRunning ? "running" : "idle")">@status.Stage</span>
+        </div>
+
+        <div class="admin-kpi-grid">
+            <div class="admin-kpi">
+                <span>Peliculas</span>
+                <strong>@health.MovieCount</strong>
+            </div>
+            <div class="admin-kpi">
+                <span>Generos</span>
+                <strong>@health.GenreCount</strong>
+            </div>
+            <div class="admin-kpi">
+                <span>Directores</span>
+                <strong>@health.DirectorCount</strong>
+            </div>
+            <div class="admin-kpi">
+                <span>Actores</span>
+                <strong>@health.ActorCount</strong>
+            </div>
+            <div class="admin-kpi">
+                <span>Valoraciones</span>
+                <strong>@health.RatingCount</strong>
+            </div>
+            <div class="admin-kpi">
+                <span>Mi lista</span>
+                <strong>@health.WatchlistCount</strong>
+            </div>
+        </div>
+
+        <p class="admin-last-movie">Ultima pelicula cargada: <strong>@health.LastMovieTitle</strong></p>
+    </section>
+
+    <section class="card-negra admin-form-card admin-import-card">
+        <h1>Importador TMDB</h1>
+        <p class="admin-help">
+            Lanza la carga del catalogo popular hacia MySQL usando la API de TMDB. La ejecucion se hace en segundo plano y puedes volver a esta pantalla para seguir el progreso.
+        </p>
+
+        <form asp-action="ImportTmdb" method="post" class="filtros-form admin-form">
+            @Html.AntiForgeryToken()
+
+            <div class="campo">
+                <label for="ApiKey">API key de TMDB</label>
+                <input id="ApiKey" name="ApiKey" value="@import.ApiKey" class="input-busqueda" placeholder="Pega aqui la API key si no la tienes en configuracion" autocomplete="off" />
+                @if (import.HasConfiguredApiKey)
+                {
+                    <small class="admin-help">Hay una API key configurada en appsettings. Si dejas el campo vacio se usara esa.</small>
+                }
+            </div>
+
+            <div class="campo">
+                <label for="TotalPages">Paginas a importar</label>
+                <input id="TotalPages" name="TotalPages" value="@import.TotalPages" class="input-anio" />
+            </div>
+
+            <div class="campo">
+                <label for="Language">Idioma</label>
+                <input id="Language" name="Language" value="@import.Language" class="input-busqueda" placeholder="es-ES" />
+            </div>
+
+            <div class="campo">
+                <label for="DelayMsBetweenPages">Espera entre paginas (ms)</label>
+                <input id="DelayMsBetweenPages" name="DelayMsBetweenPages" value="@import.DelayMsBetweenPages" class="input-anio" />
+            </div>
+
+            <div class="admin-checks">
+                <label class="admin-check">
+                    <input id="SkipWithoutPoster" name="SkipWithoutPoster" type="checkbox" value="true" checked="@import.SkipWithoutPoster" />
+                    <input name="SkipWithoutPoster" type="hidden" value="false" />
+                    Omitir peliculas sin poster
+                </label>
+                <label class="admin-check">
+                    <input id="SkipWithoutOverview" name="SkipWithoutOverview" type="checkbox" value="true" checked="@import.SkipWithoutOverview" />
+                    <input name="SkipWithoutOverview" type="hidden" value="false" />
+                    Omitir peliculas sin sinopsis
+                </label>
+            </div>
+
+            <button type="submit" class="btn-aplicar" @(status.IsRunning ? "disabled" : null)>Iniciar importacion</button>
+        </form>
+    </section>
+
+    <section class="card-negra admin-status-card admin-health-card">
+        <h2>Estado actual</h2>
+        <div class="admin-status-box @(status.IsRunning ? "running" : "stopped")">
+            <strong>@status.Stage</strong>
+            <p>@status.Message</p>
+            @if (!string.IsNullOrWhiteSpace(status.LastError))
+            {
+                <p class="admin-error">@status.LastError</p>
+            }
+        </div>
+
+        <div class="admin-stats">
+            <div class="admin-stat">
+                <span>Usuario</span>
+                <strong>@(string.IsNullOrWhiteSpace(status.StartedBy) ? "-" : status.StartedBy)</strong>
+            </div>
+            <div class="admin-stat">
+                <span>Inicio</span>
+                <strong>@(status.StartedAtUtc?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "-")</strong>
+            </div>
+            <div class="admin-stat">
+                <span>Fin</span>
+                <strong>@(status.FinishedAtUtc?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "-")</strong>
+            </div>
+            <div class="admin-stat">
+                <span>Pagina</span>
+                <strong>@status.CurrentPage / @status.TotalPages</strong>
+            </div>
+            <div class="admin-stat">
+                <span>Procesadas</span>
+                <strong>@status.ProcessedMovies</strong>
+            </div>
+            <div class="admin-stat">
+                <span>Importadas</span>
+                <strong>@status.ImportedMovies</strong>
+            </div>
+            <div class="admin-stat">
+                <span>Saltadas</span>
+                <strong>@status.SkippedMovies</strong>
+            </div>
+            <div class="admin-stat">
+                <span>Con error</span>
+                <strong>@status.FailedMovies</strong>
+            </div>
+        </div>
+
+        @if (status.IsRunning)
+        {
+            <p class="admin-help">La pantalla se recarga automaticamente cada 5 segundos mientras la importacion esta activa.</p>
+        }
+    </section>
+
+    <section class="card-negra admin-form-card admin-api-card">
+        <h2>Prueba TMDB / IMDb</h2>
+        <p class="admin-help">
+            Consulta una ficha por ID de TMDB y comprueba los campos que se importan. TMDB devuelve el identificador de IMDb como <strong>imdb_id</strong> cuando existe.
+        </p>
+
+        <form asp-action="ProbeTmdb" method="post" class="filtros-form admin-form">
+            @Html.AntiForgeryToken()
+
+            <div class="campo">
+                <label for="ProbeApiKey">API key de TMDB</label>
+                <input id="ProbeApiKey" name="ApiKey" value="@probe.ApiKey" class="input-busqueda" placeholder="Dejala vacia para usar appsettings" autocomplete="off" />
+            </div>
+
+            <div class="campo">
+                <label for="MovieId">ID de pelicula en TMDB</label>
+                <input id="MovieId" name="MovieId" value="@probe.MovieId" class="input-anio" />
+            </div>
+
+            <div class="campo">
+                <label for="ProbeLanguage">Idioma</label>
+                <input id="ProbeLanguage" name="Language" value="@probe.Language" class="input-busqueda" placeholder="es-ES" />
+            </div>
+
+            <button type="submit" class="btn-aplicar">Probar APIs</button>
+        </form>
+    </section>
+
+    <section class="card-negra admin-status-card admin-api-result">
+        <h2>Resultado API</h2>
+        @if (Model.ProbeResult is null)
+        {
+            <p class="admin-help">Ejecuta una prueba para ver titulo, reparto, poster, generos y enlace de IMDb.</p>
+        }
+        else
+        {
+            var result = Model.ProbeResult!;
+            <div class="admin-status-box @(result.Succeeded ? "running" : "stopped")">
+                <strong>@result.Provider</strong>
+                <p>@result.Message</p>
+            </div>
+
+            @if (result.Succeeded)
+            {
+                <div class="admin-api-preview">
+                    @if (!string.IsNullOrWhiteSpace(result.PosterPath))
+                    {
+                        <img src="@result.PosterPath" alt="@result.Title" />
+                    }
+                    <div>
+                        <h3>@result.Title</h3>
+                        <p class="admin-help">@result.OriginalTitle - @result.ReleaseDate - @result.RuntimeMinutes min - @result.OriginalLanguage.ToUpperInvariant()</p>
+                        <p><strong>TMDB:</strong> @result.TmdbId</p>
+                        <p><strong>IMDb:</strong> @(string.IsNullOrWhiteSpace(result.ImdbId) ? "No disponible" : result.ImdbId)</p>
+                        @if (!string.IsNullOrWhiteSpace(result.ImdbUrl))
+                        {
+                            <p><a href="@result.ImdbUrl" target="_blank" rel="noopener">Abrir ficha IMDb</a></p>
+                        }
+                        <p><strong>Generos:</strong> @string.Join(", ", result.Genres)</p>
+                        <p><strong>Direccion:</strong> @string.Join(", ", result.Directors)</p>
+                        <p><strong>Reparto:</strong> @string.Join(", ", result.Actors)</p>
+                    </div>
+                </div>
+            }
+        }
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    @if (status.IsRunning)
+    {
+        <script>
+            window.setTimeout(function () {
+                window.location.reload();
+            }, 5000);
+        </script>
+    }
+}

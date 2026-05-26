@@ -1,0 +1,64 @@
+@* Archivo: CRM.AplicacionWeb\Views\Shared\_Layout.cshtml
+   Plantilla compartida que define la estructura general de las paginas autenticadas. *@
+@{
+    @* Modo visual que decide si la pagina usa cabecera de seccion o de inicio. *@
+    var shellMode = (ViewData["ShellMode"] as string ?? "home").ToLowerInvariant();
+    @* Texto de apoyo mostrado en la cabecera cuando la vista lo define. *@
+    var slogan = ViewData["Slogan"] as string;
+    @* Clases CSS elegidas a partir del modo visual de la pagina. *@
+    var mainClass = shellMode == "section" ? "estructuraPDPA" : "estructuraPrincipal";
+    var headerClass = shellMode == "section" ? "headerPDPA" : "header";
+    var logoClass = shellMode == "section" ? "fncPDPA" : "fnc";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CineRoadMap</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <main class="@mainClass">
+        <header class="@headerClass">
+            <a asp-controller="Home" asp-action="Index" style="text-decoration:none;">
+                @if (shellMode == "section")
+                {
+                    <section class="@logoClass">
+                        <h1 class="fPDPA">C</h1>
+                        <h1 class="nPDPA">R</h1>
+                        <h1 class="cPDPA"></h1>
+                    </section>
+                }
+                else
+                {
+                    <section class="@logoClass">
+                        <h1 class="f">Cine</h1>
+                        <span class="n">R</span>
+                        <h1 class="c">oadMap</h1>
+                    </section>
+                }
+            </a>
+
+            @if (!string.IsNullOrWhiteSpace(slogan))
+            {
+                <h2>@slogan</h2>
+            }
+        </header>
+
+        <partial name="_LegacyNav" />
+
+        @if (TempData["Flash"] is string flash)
+        {
+            <div class="flash-banner">@flash</div>
+        }
+
+        @RenderBody()
+
+        <partial name="_LegacyFooter" />
+    </main>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

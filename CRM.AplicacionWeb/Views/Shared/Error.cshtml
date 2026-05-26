@@ -1,0 +1,18 @@
+@* Archivo: CRM.AplicacionWeb\Views\Shared\Error.cshtml
+   Vista compartida para mostrar errores de la aplicacion. *@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<section class="content-section">
+    <div class="empty-state">
+        <h1>Algo ha ido mal</h1>
+        <p>La solicitud no se pudo procesar correctamente.</p>
+        @if (Model.ShowRequestId)
+        {
+            <p><strong>Request ID:</strong> <code>@Model.RequestId</code></p>
+        }
+        <a class="button" asp-controller="Home" asp-action="Index">Volver al inicio</a>
+    </div>
+</section>

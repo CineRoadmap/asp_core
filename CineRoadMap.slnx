@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="CRM.AplicacionWeb/CRM.AplicacionWeb.csproj" />
+  <Project Path="CRM.ImportadorTmdb/CRM.ImportadorTmdb.csproj" />
+  <Project Path="CRM.Dependencia/CRM.Dependencia.csproj" />
+  <Project Path="CRM.Control/CRM.Control.csproj" />
+  <Project Path="CRM.Datos/CRM.Datos.csproj" />
+  <Project Path="CRM.Entidad/CRM.Entidad.csproj" />
+  <Project Path="CRM.Proyecto/CRM.Proyecto.csproj" />
+</Solution>

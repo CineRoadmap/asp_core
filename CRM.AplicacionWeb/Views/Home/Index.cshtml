@@ -1,0 +1,83 @@
+@* Archivo: CRM.AplicacionWeb\Views\Home\Index.cshtml
+   Vista Razor de inicio con el resumen principal de CineRoadMap. *@
+@model CRM.Proyecto.Dtos.HomeDashboardDto
+@{
+    ViewData["ShellMode"] = "home";
+    ViewData["Slogan"] = "Tu guía cinéfila: Opiniones auténticas, decisiones acertadas.";
+}
+
+<div class="cuerpo">
+    <section class="espacioFondo">
+        <h1>Bienvenido @Model.DisplayName</h1>
+        <h4>CineRoadmap: Traza tu ruta, descubre la crítica y vive el cine. Tu próxima historia favorita empieza aquí.</h4>
+    </section>
+
+    <div class="separador"></div>
+
+    <section class="espacioCine">
+        <div class="slider">
+            <section class="espacioFondo">
+                <h1>Selección de la semana</h1>
+            </section>
+            <ul>
+                @foreach (var movie in Model.WeeklyRecommendations)
+                {
+                    <li>
+                        <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id">
+                            <img src="@movie.PosterPath" alt="@movie.Title" />
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="graficaSeccion">
+            @if (!Model.IsAuthenticated)
+            {
+                <div class="banner-unete">
+                    <h2>Únete a la mayor comunidad cinéfila</h2>
+                    <p>"Un nuevo desafío te espera en cada fotograma"</p>
+                    <div class="uneteIndex">
+                        <a asp-controller="Account" asp-action="Register" class="btn-desafio">ACEPTAR DESAFÍO</a>
+                    </div>
+                </div>
+            }
+            else if (Model.DailyPick is not null)
+            {
+                <section class="espacioFondo">
+                    <h1 class="recomendacion-diaria-titulo">¿No sabes qué ver hoy?</h1>
+                </section>
+
+                <div class="recomendacion-diaria-contenedor">
+                    <a asp-controller="Movies" asp-action="Details" asp-route-id="@Model.DailyPick.Id">
+                        <img class="peliculas" src="@Model.DailyPick.PosterPath" alt="@Model.DailyPick.Title" />
+                    </a>
+                    <section class="espacioFondo recomendacion-diaria-nombre">
+                        <h4>@Model.DailyPick.Title</h4>
+                    </section>
+                </div>
+            }
+        </div>
+    </section>
+
+    <div class="separador"></div>
+
+    <section class="espacioFondo">
+        <h1 class="titulo_cuerpo">Top 6 películas más valoradas</h1><br />
+    </section>
+
+    <section class="espacioTopPeliculas">
+        @foreach (var movie in Model.TopMovies)
+        {
+            <article class="top-movie-card">
+                <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id">
+                    <img src="@movie.PosterPath" alt="@movie.Title" />
+                </a>
+                <div class="top-movie-info">
+                    <strong>@movie.Title</strong>
+                    <span>@movie.AverageScore.ToString("0.0")/5 - @movie.RatingCount valoraciones</span>
+                </div>
+            </article>
+        }
+    </section>
+</div>

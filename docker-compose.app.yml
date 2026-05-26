@@ -1,0 +1,22 @@
+# Archivo: docker-compose.app.yml
+# Compose de la aplicacion web y sus variables de ejecucion.
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: CRM.AplicacionWeb/Dockerfile
+    container_name: cineroadmap-web
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Server=cineroadmap-mysql;Port=3306;Database=cineroadmap;User ID=cineroadmap;Password=${MYSQL_PASSWORD:?Define MYSQL_PASSWORD en .env};SslMode=None;AllowPublicKeyRetrieval=true;
+    ports:
+      - "8080:8080"
+    networks:
+      - cineroadmap-network
+
+networks:
+  cineroadmap-network:
+    name: cineroadmap-network
+    external: true

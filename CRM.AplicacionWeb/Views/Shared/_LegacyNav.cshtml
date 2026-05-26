@@ -1,0 +1,47 @@
+@* Archivo: CRM.AplicacionWeb\Views\Shared\_LegacyNav.cshtml
+   Partial compartido que conserva la navegacion visual heredada del proyecto. *@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    @* Usuarios autorizados explicitamente para entrar al panel de administracion. *@
+    var allowedUsers = Configuration.GetSection("AdminPanel:AllowedUsers").Get<string[]>() ?? [];
+    @* Nombre de usuario autenticado usado para comprobar permisos de menu. *@
+    var currentUser = User.Identity?.Name;
+    @* Permiso global que abre el panel a cualquier usuario autenticado en entornos controlados. *@
+    var allowAllAdmins = bool.TryParse(Configuration["AdminPanel:AllowAllAuthenticated"], out var allowAllValue) && allowAllValue;
+    @* Resultado final que decide si se muestra el enlace de administracion. *@
+    var canAccessAdmin = User.Identity?.IsAuthenticated == true
+        && !string.IsNullOrWhiteSpace(currentUser)
+        && (allowAllAdmins || allowedUsers.Any(user => string.Equals(user, currentUser, StringComparison.OrdinalIgnoreCase)));
+}
+<div class="bNavegacion">
+    <nav class="links">
+        <ul>
+            @if (User.Identity?.IsAuthenticated != true)
+            {
+                <li class="despegable"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="despegable"><a asp-controller="Account" asp-action="Login">Login</a></li>
+                <li class="despegable"><a asp-controller="Account" asp-action="Register">Registro</a></li>
+            }
+            else
+            {
+                <li class="despegable"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li class="despegable"><a asp-controller="Movies" asp-action="Index">Películas</a></li>
+                <li class="despegable"><a asp-controller="Achievements" asp-action="Index">Logros e Insignias</a></li>
+                <li class="despegable"><a asp-controller="Challenges" asp-action="Index">Retos</a></li>
+                <li class="despegable"><a asp-controller="Community" asp-action="Index">Comunidad</a></li>
+                <li class="despegable"><a asp-controller="Profile" asp-action="Index">Perfil</a></li>
+                @if (canAccessAdmin)
+                {
+                    <li class="despegable"><a asp-controller="Admin" asp-action="Index">Administracion</a></li>
+                }
+                <li class="despegable">
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="legacy-logout-form">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="legacy-logout-button">Cerrar sesión</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

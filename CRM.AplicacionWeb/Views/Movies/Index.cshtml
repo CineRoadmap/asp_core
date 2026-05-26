@@ -1,0 +1,92 @@
+@* Archivo: CRM.AplicacionWeb\Views\Movies\Index.cshtml
+   Vista Razor del catalogo de peliculas y filtros disponibles. *@
+@model CRM.Proyecto.Dtos.MovieCatalogDto
+@{
+    ViewData["ShellMode"] = "section";
+    ViewData["Slogan"] = "El catalogo de tus suenos, a un clic de distancia. Tu butaca esta lista, elige la funcion.";
+}
+
+<div class="cuerpoPDPA">
+    <section class="filtros-container">
+        <form method="get" class="filtros-form">
+            <div class="campo">
+                <label for="search">Busqueda:</label>
+                <input id="search" type="text" name="search" class="input-busqueda" placeholder="Titulo..." value="@Model.Search" />
+            </div>
+
+            <div class="campo">
+                <label for="genreId">Genero:</label>
+                <select id="genreId" name="genreId" class="select-genero">
+                    <option value="0">Todos</option>
+                    @foreach (var genre in Model.Genres)
+                    {
+                        <option value="@genre.Id" selected="@(Model.GenreId == genre.Id ? "selected" : null)">@genre.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="year">Anio:</label>
+                <input id="year" type="number" name="year" class="input-anio" value="@Model.Year" placeholder="Ej: 2024" />
+            </div>
+
+            <button type="submit" class="btn-aplicar">APLICAR</button>
+
+            <div class="filtros-rapidos">
+                <a asp-action="Index" class="btn-filtro-lista @(Model.ViewMode == "all" ? "btn-activo" : "btn-inactivo")">Todas</a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-action="Index" asp-route-viewMode="watchlist" class="btn-filtro-lista @(Model.ViewMode == "watchlist" ? "btn-activo" : "btn-inactivo")">
+                        <span>★</span> Mi Lista
+                    </a>
+                    <a asp-action="Index" asp-route-viewMode="rated" class="btn-filtro-lista @(Model.ViewMode == "rated" ? "btn-activo" : "btn-inactivo")">
+                        <span>✔</span> Valoradas
+                    </a>
+                }
+            </div>
+
+            <a asp-action="Index" class="btn-limpiar">Limpiar</a>
+        </form>
+    </section>
+
+    <section class="gridPeliculas">
+        @if (Model.Movies.Items.Any())
+        {
+            @foreach (var movie in Model.Movies.Items)
+            {
+                <div class="contenedorPeliculas">
+                    <a asp-action="Details" asp-route-id="@movie.Id">
+                        <img class="imgPelicula" src="@movie.PosterPath" alt="@movie.Title" loading="lazy" />
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                <h3 style="color:white;">No se encontraron peliculas en esta seccion.</h3>
+                @if (Model.ViewMode == "watchlist")
+                {
+                    <p style="color:#888;">Anade peliculas a "Mi Lista" desde su ficha de informacion.</p>
+                }
+                else if (Model.ViewMode == "rated")
+                {
+                    <p style="color:#888;">Aun no has valorado ninguna pelicula.</p>
+                }
+            </div>
+        }
+    </section>
+
+    <div class="paginacion">
+        @for (var i = 1; i <= Model.Movies.TotalPages; i++)
+        {
+            <a asp-action="Index"
+               asp-route-p="@i"
+               asp-route-search="@Model.Search"
+               asp-route-genreId="@(Model.GenreId ?? 0)"
+               asp-route-year="@(Model.Year ?? 0)"
+               asp-route-viewMode="@Model.ViewMode"
+               class="btn-pag @(i == Model.Movies.Page ? "activo" : null)">@i</a>
+        }
+    </div>
+</div>

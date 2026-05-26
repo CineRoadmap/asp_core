@@ -1,0 +1,69 @@
+@* Archivo: CRM.AplicacionWeb\Views\Profile\Public.cshtml
+   Perfil publico de un miembro de la comunidad. *@
+@model CRM.Proyecto.Dtos.PublicUserProfileDto
+@{
+    ViewData["ShellMode"] = "section";
+    ViewData["Slogan"] = "Historias vistas, retos superados y rutas compartidas.";
+}
+
+<div class="cuerpoPDPA">
+    <div class="perfil-wrapper perfil-publico">
+        <section class="card-negra perfil-publico-header">
+            <div>
+                <h1>@Model.Summary.NickName</h1>
+                <p>@Model.Summary.UserName</p>
+            </div>
+            <div class="perfil-publico-stats">
+                <span><strong>@Model.Summary.TotalMoviesWatched</strong> peliculas vistas</span>
+                <span><strong>@Model.Summary.UnlockedBadges</strong> logros</span>
+                <span><strong>@Model.Summary.TotalRatings</strong> valoraciones</span>
+            </div>
+        </section>
+
+        <section class="card-negra">
+            <h2>Peliculas vistas</h2>
+            <div class="perfil-movie-grid">
+                @if (Model.WatchedMovies.Any())
+                {
+                    @foreach (var movie in Model.WatchedMovies)
+                    {
+                        <article class="perfil-movie-card">
+                            <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id">
+                                <img src="@movie.PosterPath" alt="@movie.Title" loading="lazy" />
+                            </a>
+                            <strong>@movie.Title</strong>
+                            <span>@movie.AverageScore.ToString("0.0")/5 - @movie.RatingCount valoraciones</span>
+                        </article>
+                    }
+                }
+                else
+                {
+                    <p class="perfil-empty">Este usuario todavia no tiene peliculas vistas.</p>
+                }
+            </div>
+        </section>
+
+        <section class="card-negra">
+            <h2>Logros conseguidos</h2>
+            <div class="perfil-achievement-grid">
+                @if (Model.Summary.UnlockedAchievements.Any())
+                {
+                    @foreach (var achievement in Model.Summary.UnlockedAchievements)
+                    {
+                        <article class="perfil-achievement-card">
+                            <img src="@achievement.BadgeImagePath" alt="@achievement.Title" />
+                            <div>
+                                <strong>@achievement.Title</strong>
+                                <span>@achievement.Description</span>
+                            </div>
+                        </article>
+                    }
+                }
+                else
+                {
+                    <p class="perfil-empty">Este usuario todavia no ha desbloqueado logros.</p>
+                }
+            </div>
+        </section>
+    </div>
+</div>

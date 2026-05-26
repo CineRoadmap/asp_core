@@ -1,0 +1,80 @@
+@* Archivo: CRM.AplicacionWeb\Views\Movies\Details.cshtml
+   Vista Razor con el detalle de una pelicula concreta y sus acciones. *@
+@model CRM.Proyecto.Dtos.MovieDetailsDto
+@{
+    ViewData["ShellMode"] = "section";
+    ViewData["Slogan"] = "Ficha completa de película, comunidad y valoración.";
+}
+
+<div class="cuerpoPDPA">
+    <div class="detalle-layout">
+        <div class="columna-poster">
+            <img src="@Model.PosterPath" alt="@Model.Title" />
+        </div>
+
+        <div class="columna-info">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1>@Model.Title</h1>
+                    <div class="anio-texto">@Model.Year</div>
+                </div>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <form asp-action="ToggleWatchlist" asp-route-id="@Model.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-watchlist @(Model.IsInWatchlist ? "remove" : "add")">
+                            @(Model.IsInWatchlist ? "✓ En mi lista" : "+ Mi Lista")
+                        </button>
+                    </form>
+                }
+            </div>
+
+            <h2 class="metadata-label" style="color: #e50914;">Sinopsis</h2>
+            <p class="sinopsis-texto">@Model.Synopsis</p>
+
+            <div class="info-grid">
+                <div>
+                    <div class="metadata-label">Director</div>
+                    <div class="metadata-value">@string.Join(", ", Model.Directors)</div>
+                    <div class="metadata-label">Género</div>
+                    <div class="metadata-value">@string.Join(", ", Model.Genres)</div>
+                </div>
+                <div>
+                    <div class="metadata-label">Reparto</div>
+                    <div class="metadata-value">@string.Join(", ", Model.Actors)</div>
+                    <div class="metadata-label">Idioma original</div>
+                    <div class="metadata-value">@Model.OriginalLanguage.ToUpperInvariant() · @Model.DurationMinutes min</div>
+                </div>
+            </div>
+
+            <div class="valoracion-container">
+                <div class="metadata-label">Nota de la Comunidad</div>
+                <div class="promedio-valor">★ @Model.AverageScore.ToString("0.0") <span>/ 5.0</span></div>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="metadata-label" style="font-size: 0.75rem;">Tu valoración (marca como vista):</div>
+                    <form asp-action="Rate" asp-route-id="@Model.Id" method="post" class="estrellas-form">
+                        @Html.AntiForgeryToken()
+                        @for (var score = 5; score >= 1; score--)
+                        {
+                            <button type="submit" name="score" value="@score" class="btn-estrella">★</button>
+                        }
+                    </form>
+                    @if (Model.UserScore.HasValue)
+                    {
+                        <p class="status-ok">Tu puntuación actual: @Model.UserScore.Value / 5</p>
+                    }
+                }
+                else
+                {
+                    <div class="login-alerta">
+                        <a asp-controller="Account" asp-action="Login">Inicia sesión para votar y añadir a tu lista</a>
+                    </div>
+                }
+            </div>
+            <a asp-action="Index" class="btn-volver">← VOLVER AL CATÁLOGO</a>
+        </div>
+    </div>
+</div>

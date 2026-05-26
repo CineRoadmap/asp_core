@@ -1,0 +1,48 @@
+@* Archivo: CRM.AplicacionWeb\Views\Achievements\Index.cshtml
+   Vista Razor que presenta los logros e insignias del usuario. *@
+@model IReadOnlyCollection<CRM.Proyecto.Dtos.AchievementProgressDto>
+@{
+    ViewData["ShellMode"] = "section";
+    ViewData["Slogan"] = "Completa logros, desbloquea insignias y demuestra tu pasión por el cine.";
+    @* Filtro activo que decide que grupo de logros se resalta en la vista. *@
+    var activeFilter = ViewBag.ActiveFilter as string ?? string.Empty;
+}
+
+<div class="cuerpoPDPA">
+    <section class="gridDirectores layoutLogros">
+        <div class="filtrosLogros">
+            <a asp-action="Index" class="btn-filtro @(string.IsNullOrEmpty(activeFilter) ? "activo" : null)">Todos</a>
+            <a asp-action="Index" asp-route-filter="genero" class="btn-filtro @(activeFilter == "genero" || activeFilter == "genre" ? "activo" : null)">Géneros</a>
+            <a asp-action="Index" asp-route-filter="director" class="btn-filtro @(activeFilter == "director" ? "activo" : null)">Directores</a>
+            <a asp-action="Index" asp-route-filter="actor" class="btn-filtro @(activeFilter == "actor" ? "activo" : null)">Actores</a>
+            <a asp-action="Index" asp-route-filter="anio" class="btn-filtro @(activeFilter == "anio" || activeFilter == "year" ? "activo" : null)">Año</a>
+        </div>
+
+        <div class="wrapperLogrosInterno">
+            @foreach (var achievement in Model)
+            {
+                <div class="contenedorDirectores">
+                    <div class="posicionFrontal">
+                        <img class="imagenFrontal" src="@achievement.BadgeImagePath" alt="@achievement.Title" />
+                    </div>
+                    <div class="posicionCarta">
+                        <section class="informacionDirector">
+                            <h1>@achievement.Title</h1>
+                            <div class="col2">
+                                <h2>Descripción</h2>
+                                <p>@achievement.Description</p>
+                            </div>
+                            <div class="col3">
+                                <h2>Progreso</h2>
+                                <p>@achievement.Progress / @achievement.Objective</p>
+                                <div class="barraProgreso">
+                                    <div class="llenado" style="width:@(achievement.Objective == 0 ? 0 : Math.Min(100, achievement.Progress * 100 / achievement.Objective))%"></div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+</div>
