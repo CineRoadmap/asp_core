@@ -111,7 +111,7 @@ public sealed class AccountService : IAccountService
         }
 
         await _users.UpdatePasswordAsync(user.Id, PasswordCodec.Hash(request.NewPassword), cancellationToken);
-        return AccountActionResultDto.Success("Contrasena actualizada. Ya puedes iniciar sesion con la nueva contrasena.");
+        return AccountActionResultDto.Success("");
     }
 
     // Busca un usuario por identificador para reconstruir datos basicos cuando haga falta.

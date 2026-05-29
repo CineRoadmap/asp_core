@@ -2,10 +2,10 @@
 # Script SQL para crear el usuario de base de datos usado por la aplicacion.
 
 # CREACION DEL USUARIO DE BASE DE DATOS
-CREATE USER 'cineroadmap'@'%' IDENTIFIED BY '1234';
+CREATE USER 'cineroadmap'@'localhost' IDENTIFIED BY '1234';
 
 # DAR PRIVILEGIOS A LA BASE DE DATOS DE LA APLICACION
-GRANT ALL PRIVILEGES ON cineroadmap.* TO 'cineroadmap'@'%';
+GRANT ALL PRIVILEGES ON cineroadmap.* TO 'cineroadmap'@'localhost';
 
 # ACTUALIZAR PRIVILEGIOS
 FLUSH PRIVILEGES;
