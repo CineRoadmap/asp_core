@@ -52,7 +52,7 @@ services:
       PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Define MYSQL_ROOT_PASSWORD en .env}
     ports:
-      - "8081:80"
+      - "127.0.0.1:8081:80"
     networks:
       - cineroadmap-network
 

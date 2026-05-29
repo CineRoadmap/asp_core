@@ -15,7 +15,7 @@ CineRoadMap es una aplicación web ASP.NET Core MVC para registrar películas vi
 
 ## Requisitos
 
-- .NET SDK compatible con el `TargetFramework` configurado en los proyectos.
+- .NET SDK 10.0.100 o superior dentro de la familia .NET 10 para ejecutar el proyecto sin Docker. Los proyectos usan `TargetFramework` `net10.0`.
 - Docker Desktop para levantar MySQL, phpMyAdmin y la aplicación con Compose.
 - Una API key de TMDB solo para importar catálogo real.
 
@@ -44,7 +44,7 @@ docker compose up --build
 ```
 
 1. Web: `http://localhost:8080` (Importante: Antes de acceder a la web, debes importar la base de datos en la base de datos, tal como se especifica en [Scripts_BD/README.md](Scripts_BD/README.md))
-2. phpMyAdmin: `http://localhost:8081`
+2. phpMyAdmin: `http://localhost:8081` (solo accesible desde la máquina local)
 
 ### Uso de la aplicación
 
@@ -71,6 +71,7 @@ docker compose down
 ## Pruebas
 
 La estrategia de pruebas está descrita en [docs/PLAN_PRUEBAS.md](docs/PLAN_PRUEBAS.md).
+
 ## Estilo de código
 
 Las reglas de comentarios, nombres de variables y convenciones entre capas están en [docs/ESTILOS_CODIGO.md](docs/ESTILO_CODIGO.md).

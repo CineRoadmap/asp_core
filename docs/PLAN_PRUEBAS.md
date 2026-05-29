@@ -1,12 +1,8 @@
-Aquí tienes el **Plan de pruebas de CineRoadMap** corregido minuciosamente, añadiendo todas las **tildes (acentos)**, la **letra ñ** y los caracteres correspondientes (*contraseña, autenticación, inicialización, administración, año, película*, etc.) para que mantenga una ortografía impecable en tu memoria de proyecto.
-
----
-
 # Plan de pruebas de CineRoadMap
 
 ## Objetivo
 
-Validar que CineRoadMap funciona correctamente en Docker, que los flujos principales guardan datos en MySQL y que las pantallas de autenticación, perfil, comunidad, catálogo, retos, logros y administración mantienen el comportamiento esperado.
+Validar que CineRoadMap funciona correctamente en Docker, que los flujos principales guardan datos en MySQL y que las pantallas de autenticación, perfil, comunidad, catálogo, retos, logros y administración mantienen el comportamiento esperado. Todas las pruebas se realizarán de manera manual, debido al poco tiempo que tenemos no hemos desarrollado pruebas automatizadas con `dotnet test`.
 
 ## Alcance
 
