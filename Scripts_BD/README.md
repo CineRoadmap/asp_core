@@ -6,6 +6,7 @@ Acceder a la ruta de phpMyAdmin (`http://localhost:8081`), iniciar con el perfil
 
 1. `001_init_database.sql`: crea la base, tablas, relaciones y catalogos iniciales.
 2. `002_create_database_user.sql`: crea el usuario tecnico usando variables de sesion.
+3. `003_validation_count.sql`: comprueba que se han implementado los datos semilla.
 
 ## Diagrama de base de datos
 
