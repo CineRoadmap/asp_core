@@ -85,7 +85,7 @@ public sealed class TmdbCatalogImporter
                 continue;
             }
 
-            // 🔥 OPTIMIZACIÓN CLAVE: Creamos un lote de tareas para procesar la página EN PARALELO
+            // OPTIMIZACIÓN CLAVE: Creamos un lote de tareas para procesar la página EN PARALELO
             var tareasPeliculas = popular.Results.Select(async movie =>
             {
                 // Incremento seguro entre hilos concurrentes
