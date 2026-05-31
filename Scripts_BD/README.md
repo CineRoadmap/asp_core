@@ -10,4 +10,4 @@ Acceder a la ruta de phpMyAdmin (`http://localhost:8081`), iniciar con el perfil
 ## Diagrama de base de datos
 
 El siguiente Modelo Entidad-Relación presenta la forma en la que está construida la base de datos a importar
-[resources/img/MER_CineRoadmap.jpg](resources/img/MER_CineRoadmap.jpg)
+![resource/img/MER_CineRoadmap.jpg](resources/img/MER_CineRoadmap.jpg)
