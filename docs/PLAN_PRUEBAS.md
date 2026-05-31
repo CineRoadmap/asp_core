@@ -228,6 +228,10 @@ SELECT * FROM lista_pendientes WHERE usuario_id = <id_usuario>;
 | Perfil propio en comunidad | No aparece como tarjeta visitable en perfiles de comunidad. |
 | Caché comunidad | No conserva datos de otro usuario tras logout/login. |
 
+### Hash de contraseñas
+
+Las contraseñas se podrán ver hasheadas en el archivo [CRM.Proyecto/Security/PasswordCodec.cs](/CRM.Proyecto/Security/PasswordCodec.cs)
+![resource/img/EjemploCifradoContrasena.png](resource/img/EjemploCifradoContrasena.png)
 ## Pruebas de base de datos
 
 Ejecutar después de flujos principales:
@@ -240,6 +244,7 @@ SELECT COUNT(*) FROM logros_usuario WHERE completado = 1;
 SELECT COUNT(*) FROM usuario_retos WHERE estado = 'COMPLETADO';
 
 ```
+
 
 Validar:
 
